@@ -61,7 +61,6 @@ class TestXueQiu:
         print(size)
         width = size('width')
         height = size('height')
-
         self.driver.swipe(width*0.8,height*0.8,width*0.2,width*0.2,1000)
 
     def test_uiautomator(self):
@@ -83,7 +82,7 @@ class TestXueQiu:
         self.driver.find_element_by_xpath("//*[@text='关注']")
         print(self.driver.page_source)
 
-    @pytest.mark.parametrize("keyword,stock_type,exect_price",[
+    @pytest.mark.parametrize("keyword,stock_type,exect_price", [
         ('alibaba','BABA',100),
         ('xiaomi','01810',8.1)
     ])
@@ -96,11 +95,12 @@ class TestXueQiu:
             "//*[contains(@resource-id,'stockCode'] and @text='" + stock_type + "']/../../.."
             "//*[contains(@resource-id,'current_price')]"
         ).text)
+        #普通断言
         assert price > exect_price
+        #  hamcrest 断言
         # https://pypi.org/project/PyHamcrest/
         # 判断值在某个范围内，引入包 from hamcrest import * ，可使用asser_that(),close_to  方法
         #close_to ()接近某个范围值
-
         assert_that(price, close_to(exect_price, exect_price*0.2))
 
 
