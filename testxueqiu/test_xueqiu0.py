@@ -3,10 +3,11 @@
 # Then you can paste this into a file and simply run with Python
 import pytest
 from appium import webdriver
+from appium.webdriver.common.mobileby import MobileBy
 from appium.webdriver.common.touch_action import TouchAction
 from selenium.webdriver.common.by import By
 from hamcrest import *
-
+from selenium.webdriver.support.wait import WebDriverWait
 
 
 class TestXueQiu:
@@ -50,7 +51,6 @@ class TestXueQiu:
 
         #滑动，起止点的坐标 (x1,y1,x2,y2,滑动时间 单位ms )
         # self.driver.find_element(By.XPATH, "//*[text='雪球']").click()
-
 
         for i in range(5):
             self.driver.swipe(100, 250, 100, 600, 1000)
@@ -102,6 +102,29 @@ class TestXueQiu:
         # 判断值在某个范围内，引入包 from hamcrest import * ，可使用asser_that(),close_to  方法
         #close_to ()接近某个范围值
         assert_that(price, close_to(exect_price, exect_price*0.2))
+
+    def test_webview(self):
+        self.driver.find_element(MobileBy.XPATH, "//*[@text='交易']").click()
+        # 返回的是不带webview的组件，默认是找不到webview内的元素，除非设置了等待
+        print(self.driver.page_source)
+        # 原生定位
+        self.driver.find_element(MobileBy.ID, 'page_type_fund').click()
+
+        WebDriverWait(self.driver, 10, 1).until(lambda x: "WEBVIEW_com.xueqiu.android" in self.driver.contexts)
+        print("=======webview load")
+        # 返回的是带有webview组件树，此时可以使用原生定位去定位webview内的元素
+        print(self.driver.page_source)
+        # 使用原生定位方式定位webview控件
+        self.driver.find_element(MobileBy.ACCESSIBILITY_ID, "蛋卷基金安全开户").click()
+
+        self.driver.switch_to.context("WEBVIEW_com.xueqiu.android")
+        print("======webview enter")
+        # 返回的是html，此次可以使用selenium的css定位
+        print(self.driver.page_source)
+        self.driver.find_element(By.NAME, "tel").send_keys("15600534760")
+        self.driver.find_element(By.NAME, "captcha").send_keys("1234")
+        self.driver.find_element(By.CSS_SELECTOR, ".dj-button").click()
+
 
 
 

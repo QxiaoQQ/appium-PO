@@ -5,6 +5,7 @@ from selenium.webdriver.support import expected_conditions
 from selenium.webdriver.support.wait import WebDriverWait
 
 from appium_po.page.Profile_Page import ProfilePage
+from appium_po.page.TradePage import TradePage
 from appium_po.page.search_page import SearchPage
 # 先写用例，在写方法，这是集成测试
 
@@ -31,6 +32,19 @@ class XueqiuPage:
         # WebDriverWait(self.driver, 20).until(
         #     expected_conditions.visibility_of_element_located((By.ID,"com.xueqiu.android:id/tv_agree")) )
 
+        # 只要不存在就一直点,等到元素不出现，
+        def click_cancel(x):
+            #X 是java 的传参
+            #如果元素存在，就点击它，如果不存在，就返回它
+            if self.driver.find_element_by_id("tv_agree").is_displayed():
+                self.driver.find_element_by_id("tv_agree").click()
+            else:
+                print("no displayed")
+
+            return len(self.driver.find_element_by_id("tv_agree")) >= 1
+
+        WebDriverWait(self.driver,20).until_not(click_cancel)
+
     def goto_search(self):
         # 进入搜索页
         self.driver.find_element_by_id("tv_search").click()
@@ -48,5 +62,11 @@ class XueqiuPage:
     def get_ads(self):
         #有无广告
         return False
+
+    def goto_trade(self):
+        self.driver.find_element(By.XPATH,"//*[@text='交易']").click()
+        return TradePage(self.driver)
+
+
 
 

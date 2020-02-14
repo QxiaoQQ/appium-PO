@@ -1,11 +1,11 @@
 from selenium.webdriver.remote.webdriver import WebDriver
 
+from appium_po.page.base_page import BasePage
 
-class SearchPage:
+
+class SearchPage(BasePage):
 
     # 类型推导 ：driver 传来传去已经不知道它是标准化的driver了，所以需要加上 :WebDriver
-    def __init__(self, driver:WebDriver):
-        self.driver = driver
 
     def search(self,keyword):
         #搜索内容
